@@ -1,0 +1,46 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    <title>Update</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		{% tailwind_css %}
+		<style>
+			.conteneur{
+				height : 550px;
+			}
+		</style>
+		{% load static %}
+		<script src="{% static 'jquery.js'%}"></script>
+	</head>
+
+	<body>
+        {% for tk in task %}
+        <form class="w-full h-full" method="POST" action="{% url "todolist:modify" %}">
+            {% csrf_token %}
+
+            <div>
+                <label>Title</label>
+                <input type="text" name ="id" value="{{tk.id}}" class="hidden">
+                <input type="text" name ="title" value="{{tk.title}}">
+            </div>
+            <div class="flex flex-col h-1/2">
+                <label>Description</label>
+                <input type="textarea" class="h-full" name="description" value="{{tk.description}}">
+            </div>
+            <div>
+                <label>Etat</label><br>
+                <input type="radio" value = "false" id = "encours" 
+                {% if not tK.etat %} checked = "checked" {% endif %} name="etat">
+                <label for="encours" >En cours</label><br>
+                <input type="radio" value = "true" id = "terminer"
+                {% if tk.etat %} checked="checked" {% endif %} name="etat">
+                <label for="terminer" >Terminer</label><br>
+            </div>
+            <button type="submit">Modifier</button>
+        </form>
+        {% endfor %}
+	</body>
+</html>

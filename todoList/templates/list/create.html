@@ -1,0 +1,95 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    <title>Django Tailwind</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		{% tailwind_css %}
+		<style>
+			.conteneur{
+				height : 550px;
+			}
+		</style>
+		{% load static %}
+		<script src="{% static 'jquery.js'%}"></script>
+	</head>
+
+	<body class="absolute w-full">
+		<div class="flex justify-between">
+			<div>
+				<label>Nombre de tache</label>
+				<div>{{nbTache}}</div>
+			</div>
+			<div>
+				<label>Tache terminer</label>
+				<div>{{nbTacheFini}}</div>
+			</div>
+			<div>
+				<label>Tache en cours</label>
+				<div>{{nbTacheEnCours}}</div>
+			</div>
+		</div>
+		<div class="w-full flex justify-center">
+			<div class="conteneur w-1/2 drop-shadow-md bg-slate-100" >
+			{% if todolist %}
+				<ul>
+				{% for todo in todolist %}
+					<div class="flex">
+						<div><input type="checkbox" name="chk" value="{{todo.id}}" class="task{{ forloop.counter0 }}"></input></div>
+						<div class="w-1/3"><li>{{todo.title}}</li></div>
+						<div class="w-1/3"><p>{{todo.description}}</p></div>
+						{% if todo.etat %}
+						<div class="w-1/3"><p class="text-green-300">Terminer</p></div>
+						{% else %}
+						<div class="w-1/3"><p class="text-red-600">En cours</p></div>
+						{% endif %}
+					</div>
+				{% endfor %}
+				</ul>
+			{% endif %}
+			</div>
+		</div>
+		<div class="flex justify-around">
+			<button id="create">Ajouter</button>
+			<form method="post" action="{% url "todolist:update" %}">
+				{% csrf_token %}
+				<input type="text" id ="id" class="hidden" name="id" value="{{tk.id}}">
+				<button id="update" type="submit" disabled>Modifier</button>
+			</form>
+			<form method="post" action="{% url "todolist:delete" %}">
+				{% csrf_token %}
+				<input name = "delete" class="hidden" id="inputDelete">
+				<button id="delete" type="submit">Supprimer</button>
+			</form>
+			<form method="post" action="{% url "todolist:achever" %}">
+				{% csrf_token %}
+				<input name="achever" class="hidden" id="inputAchever">
+				<button id="achever" type="submit" disabled>Achever</button>
+			</form>
+		</div>
+
+		<div class="flex justify-center">
+			<div id = "ajouterModal" class="w-96 h-64 bg-slate-50 absolute top-20 drop-shadow-md p-8 hidden">
+				<button class="absolute top-0 right-1" id="cancelCreate">X</button>
+				<form class="w-full h-full" method="POST" action="{% url "todolist:create" %}">
+					{% csrf_token %}
+					<div>
+						<label>Title</label>
+						<input type="text" name ="title">
+					</div>
+					<div class="flex flex-col h-1/2">
+						<label>Description</label>
+						<input type="textarea" class="h-full" name="description">
+					</div>
+					<button type="submit">Inserer</button>
+				</form>
+			</div>
+		</div>
+
+	</body>
+	<script src="{% static 'todoList/js/delete.js'%}"></script>
+	<script src="{% static 'todoList/js/create.js'%}"></script>
+	<script src="{% static 'todoList/js/update.js'%}"></script>
+</html>
